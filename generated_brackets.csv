@@ -1,0 +1,631 @@
+Bracket,Round,Game_ID,Winner,Model_Favorite,Is_Upset
+1,1,1,Duke,Duke,FALSE
+1,1,2,Ohio State,Ohio State,FALSE
+1,1,3,Northern Iowa,St. John's,TRUE
+1,1,4,Kansas,Kansas,FALSE
+1,1,5,Louisville,Louisville,FALSE
+1,1,6,North Dakota State,Michigan State,TRUE
+1,1,7,UCLA,UCLA,FALSE
+1,1,8,Connecticut,Connecticut,FALSE
+1,1,9,Florida,Florida,FALSE
+1,1,10,Iowa,Clemson,TRUE
+1,1,11,Vanderbilt,Vanderbilt,FALSE
+1,1,12,Nebraska,Nebraska,FALSE
+1,1,13,VCU,North Carolina,TRUE
+1,1,14,Illinois,Illinois,FALSE
+1,1,15,Saint Mary's,Saint Mary's,FALSE
+1,1,16,Houston,Houston,FALSE
+1,1,17,Arizona,Arizona,FALSE
+1,1,18,Utah State,Utah State,FALSE
+1,1,19,High Point,Wisconsin,TRUE
+1,1,20,Arkansas,Arkansas,FALSE
+1,1,21,BYU,NC State,TRUE
+1,1,22,Gonzaga,Gonzaga,FALSE
+1,1,23,Miami,Miami,FALSE
+1,1,24,Purdue,Purdue,FALSE
+1,1,25,Michigan,Michigan,FALSE
+1,1,26,Saint Louis,Saint Louis,FALSE
+1,1,27,Texas Tech,Texas Tech,FALSE
+1,1,28,Alabama,Alabama,FALSE
+1,1,29,Miami-OH,Tennessee,TRUE
+1,1,30,Virginia,Virginia,FALSE
+1,1,31,Kentucky,Kentucky,FALSE
+1,1,32,Iowa State,Iowa State,FALSE
+1,2,33,Ohio State,Duke,TRUE
+1,2,34,Kansas,Kansas,FALSE
+1,2,35,Louisville,Louisville,FALSE
+1,2,36,UCLA,UCLA,FALSE
+1,2,37,Florida,Florida,FALSE
+1,2,38,Nebraska,Vanderbilt,TRUE
+1,2,39,Illinois,Illinois,FALSE
+1,2,40,Houston,Houston,FALSE
+1,2,41,Arizona,Arizona,FALSE
+1,2,42,Arkansas,Arkansas,FALSE
+1,2,43,Gonzaga,Gonzaga,FALSE
+1,2,44,Purdue,Purdue,FALSE
+1,2,45,Michigan,Michigan,FALSE
+1,2,46,Alabama,Texas Tech,TRUE
+1,2,47,Virginia,Virginia,FALSE
+1,2,48,Iowa State,Iowa State,FALSE
+1,3,49,Kansas,Kansas,FALSE
+1,3,50,UCLA,UCLA,FALSE
+1,3,51,Florida,Florida,FALSE
+1,3,52,Illinois,Illinois,FALSE
+1,3,53,Arizona,Arizona,FALSE
+1,3,54,Purdue,Purdue,FALSE
+1,3,55,Michigan,Michigan,FALSE
+1,3,56,Virginia,Virginia,FALSE
+1,4,57,UCLA,Kansas,TRUE
+1,4,58,Illinois,Illinois,FALSE
+1,4,59,Arizona,Purdue,TRUE
+1,4,60,Michigan,Michigan,FALSE
+1,5,61,Illinois,Illinois,FALSE
+1,5,62,Michigan,Michigan,FALSE
+1,6,63,Illinois,Michigan,TRUE
+2,1,1,Duke,Duke,FALSE
+2,1,2,Ohio State,Ohio State,FALSE
+2,1,3,St. John's,St. John's,FALSE
+2,1,4,Kansas,Kansas,FALSE
+2,1,5,USF,Louisville,TRUE
+2,1,6,Michigan State,Michigan State,FALSE
+2,1,7,UCF,UCLA,TRUE
+2,1,8,Connecticut,Connecticut,FALSE
+2,1,9,Florida,Florida,FALSE
+2,1,10,Iowa,Clemson,TRUE
+2,1,11,Vanderbilt,Vanderbilt,FALSE
+2,1,12,Nebraska,Nebraska,FALSE
+2,1,13,VCU,North Carolina,TRUE
+2,1,14,Illinois,Illinois,FALSE
+2,1,15,Saint Mary's,Saint Mary's,FALSE
+2,1,16,Houston,Houston,FALSE
+2,1,17,Arizona,Arizona,FALSE
+2,1,18,Villanova,Utah State,TRUE
+2,1,19,Wisconsin,Wisconsin,FALSE
+2,1,20,Arkansas,Arkansas,FALSE
+2,1,21,NC State,NC State,FALSE
+2,1,22,Gonzaga,Gonzaga,FALSE
+2,1,23,Miami,Miami,FALSE
+2,1,24,Purdue,Purdue,FALSE
+2,1,25,Howard,Michigan,TRUE
+2,1,26,Georgia,Saint Louis,TRUE
+2,1,27,Texas Tech,Texas Tech,FALSE
+2,1,28,Alabama,Alabama,FALSE
+2,1,29,Tennessee,Tennessee,FALSE
+2,1,30,Virginia,Virginia,FALSE
+2,1,31,Kentucky,Kentucky,FALSE
+2,1,32,Iowa State,Iowa State,FALSE
+2,2,33,Ohio State,Duke,TRUE
+2,2,34,Kansas,Kansas,FALSE
+2,2,35,Michigan State,Michigan State,FALSE
+2,2,36,Connecticut,Connecticut,FALSE
+2,2,37,Florida,Florida,FALSE
+2,2,38,Vanderbilt,Vanderbilt,FALSE
+2,2,39,Illinois,Illinois,FALSE
+2,2,40,Houston,Houston,FALSE
+2,2,41,Arizona,Arizona,FALSE
+2,2,42,Arkansas,Arkansas,FALSE
+2,2,43,Gonzaga,Gonzaga,FALSE
+2,2,44,Purdue,Purdue,FALSE
+2,2,45,Georgia,Georgia,FALSE
+2,2,46,Texas Tech,Texas Tech,FALSE
+2,2,47,Tennessee,Virginia,TRUE
+2,2,48,Iowa State,Iowa State,FALSE
+2,3,49,Kansas,Kansas,FALSE
+2,3,50,Connecticut,Michigan State,TRUE
+2,3,51,Vanderbilt,Vanderbilt,FALSE
+2,3,52,Illinois,Illinois,FALSE
+2,3,53,Arkansas,Arizona,TRUE
+2,3,54,Gonzaga,Purdue,TRUE
+2,3,55,Texas Tech,Texas Tech,FALSE
+2,3,56,Iowa State,Iowa State,FALSE
+2,4,57,Connecticut,Kansas,TRUE
+2,4,58,Illinois,Illinois,FALSE
+2,4,59,Arkansas,Arkansas,FALSE
+2,4,60,Texas Tech,Texas Tech,FALSE
+2,5,61,Illinois,Illinois,FALSE
+2,5,62,Texas Tech,Arkansas,TRUE
+2,6,63,Illinois,Illinois,FALSE
+3,1,1,Duke,Duke,FALSE
+3,1,2,Ohio State,Ohio State,FALSE
+3,1,3,Northern Iowa,St. John's,TRUE
+3,1,4,Kansas,Kansas,FALSE
+3,1,5,Louisville,Louisville,FALSE
+3,1,6,Michigan State,Michigan State,FALSE
+3,1,7,UCF,UCLA,TRUE
+3,1,8,Connecticut,Connecticut,FALSE
+3,1,9,Florida,Florida,FALSE
+3,1,10,Clemson,Clemson,FALSE
+3,1,11,Vanderbilt,Vanderbilt,FALSE
+3,1,12,Nebraska,Nebraska,FALSE
+3,1,13,North Carolina,North Carolina,FALSE
+3,1,14,Illinois,Illinois,FALSE
+3,1,15,Texas A&M,Saint Mary's,TRUE
+3,1,16,Houston,Houston,FALSE
+3,1,17,Arizona,Arizona,FALSE
+3,1,18,Utah State,Utah State,FALSE
+3,1,19,High Point,Wisconsin,TRUE
+3,1,20,Arkansas,Arkansas,FALSE
+3,1,21,BYU,NC State,TRUE
+3,1,22,Gonzaga,Gonzaga,FALSE
+3,1,23,Miami,Miami,FALSE
+3,1,24,Queens,Purdue,TRUE
+3,1,25,Michigan,Michigan,FALSE
+3,1,26,Saint Louis,Saint Louis,FALSE
+3,1,27,Texas Tech,Texas Tech,FALSE
+3,1,28,Alabama,Alabama,FALSE
+3,1,29,Tennessee,Tennessee,FALSE
+3,1,30,Virginia,Virginia,FALSE
+3,1,31,Kentucky,Kentucky,FALSE
+3,1,32,Iowa State,Iowa State,FALSE
+3,2,33,Duke,Duke,FALSE
+3,2,34,Kansas,Kansas,FALSE
+3,2,35,Louisville,Michigan State,TRUE
+3,2,36,Connecticut,Connecticut,FALSE
+3,2,37,Clemson,Florida,TRUE
+3,2,38,Vanderbilt,Vanderbilt,FALSE
+3,2,39,Illinois,Illinois,FALSE
+3,2,40,Houston,Houston,FALSE
+3,2,41,Arizona,Arizona,FALSE
+3,2,42,Arkansas,Arkansas,FALSE
+3,2,43,BYU,Gonzaga,TRUE
+3,2,44,Miami,Miami,FALSE
+3,2,45,Michigan,Michigan,FALSE
+3,2,46,Texas Tech,Texas Tech,FALSE
+3,2,47,Virginia,Virginia,FALSE
+3,2,48,Iowa State,Iowa State,FALSE
+3,3,49,Duke,Duke,FALSE
+3,3,50,Connecticut,Connecticut,FALSE
+3,3,51,Vanderbilt,Vanderbilt,FALSE
+3,3,52,Illinois,Illinois,FALSE
+3,3,53,Arkansas,Arizona,TRUE
+3,3,54,BYU,BYU,FALSE
+3,3,55,Texas Tech,Michigan,TRUE
+3,3,56,Virginia,Virginia,FALSE
+3,4,57,Duke,Duke,FALSE
+3,4,58,Vanderbilt,Illinois,TRUE
+3,4,59,Arkansas,Arkansas,FALSE
+3,4,60,Texas Tech,Texas Tech,FALSE
+3,5,61,Duke,Vanderbilt,TRUE
+3,5,62,Arkansas,Arkansas,FALSE
+3,6,63,Duke,Arkansas,TRUE
+4,1,1,Duke,Duke,FALSE
+4,1,2,TCU,Ohio State,TRUE
+4,1,3,Northern Iowa,St. John's,TRUE
+4,1,4,Kansas,Kansas,FALSE
+4,1,5,Louisville,Louisville,FALSE
+4,1,6,Michigan State,Michigan State,FALSE
+4,1,7,UCLA,UCLA,FALSE
+4,1,8,Connecticut,Connecticut,FALSE
+4,1,9,Florida,Florida,FALSE
+4,1,10,Clemson,Clemson,FALSE
+4,1,11,Vanderbilt,Vanderbilt,FALSE
+4,1,12,Nebraska,Nebraska,FALSE
+4,1,13,North Carolina,North Carolina,FALSE
+4,1,14,Illinois,Illinois,FALSE
+4,1,15,Saint Mary's,Saint Mary's,FALSE
+4,1,16,Houston,Houston,FALSE
+4,1,17,Arizona,Arizona,FALSE
+4,1,18,Villanova,Utah State,TRUE
+4,1,19,High Point,Wisconsin,TRUE
+4,1,20,Arkansas,Arkansas,FALSE
+4,1,21,NC State,NC State,FALSE
+4,1,22,Gonzaga,Gonzaga,FALSE
+4,1,23,Miami,Miami,FALSE
+4,1,24,Purdue,Purdue,FALSE
+4,1,25,Michigan,Michigan,FALSE
+4,1,26,Georgia,Saint Louis,TRUE
+4,1,27,Texas Tech,Texas Tech,FALSE
+4,1,28,Alabama,Alabama,FALSE
+4,1,29,Miami-OH,Tennessee,TRUE
+4,1,30,Virginia,Virginia,FALSE
+4,1,31,Kentucky,Kentucky,FALSE
+4,1,32,Iowa State,Iowa State,FALSE
+4,2,33,Duke,Duke,FALSE
+4,2,34,Kansas,Kansas,FALSE
+4,2,35,Michigan State,Michigan State,FALSE
+4,2,36,UCLA,UCLA,FALSE
+4,2,37,Florida,Florida,FALSE
+4,2,38,Nebraska,Vanderbilt,TRUE
+4,2,39,Illinois,Illinois,FALSE
+4,2,40,Houston,Houston,FALSE
+4,2,41,Arizona,Arizona,FALSE
+4,2,42,Arkansas,Arkansas,FALSE
+4,2,43,Gonzaga,Gonzaga,FALSE
+4,2,44,Purdue,Purdue,FALSE
+4,2,45,Michigan,Michigan,FALSE
+4,2,46,Alabama,Texas Tech,TRUE
+4,2,47,Miami-OH,Virginia,TRUE
+4,2,48,Iowa State,Iowa State,FALSE
+4,3,49,Duke,Duke,FALSE
+4,3,50,Michigan State,Michigan State,FALSE
+4,3,51,Nebraska,Florida,TRUE
+4,3,52,Houston,Illinois,TRUE
+4,3,53,Arizona,Arizona,FALSE
+4,3,54,Purdue,Purdue,FALSE
+4,3,55,Michigan,Michigan,FALSE
+4,3,56,Miami-OH,Iowa State,TRUE
+4,4,57,Duke,Duke,FALSE
+4,4,58,Houston,Houston,FALSE
+4,4,59,Purdue,Purdue,FALSE
+4,4,60,Michigan,Michigan,FALSE
+4,5,61,Houston,Houston,FALSE
+4,5,62,Michigan,Michigan,FALSE
+4,6,63,Michigan,Michigan,FALSE
+5,1,1,Duke,Duke,FALSE
+5,1,2,TCU,Ohio State,TRUE
+5,1,3,Northern Iowa,St. John's,TRUE
+5,1,4,Kansas,Kansas,FALSE
+5,1,5,Louisville,Louisville,FALSE
+5,1,6,North Dakota State,Michigan State,TRUE
+5,1,7,UCLA,UCLA,FALSE
+5,1,8,Connecticut,Connecticut,FALSE
+5,1,9,Florida,Florida,FALSE
+5,1,10,Clemson,Clemson,FALSE
+5,1,11,Vanderbilt,Vanderbilt,FALSE
+5,1,12,Nebraska,Nebraska,FALSE
+5,1,13,VCU,North Carolina,TRUE
+5,1,14,Illinois,Illinois,FALSE
+5,1,15,Saint Mary's,Saint Mary's,FALSE
+5,1,16,Houston,Houston,FALSE
+5,1,17,Arizona,Arizona,FALSE
+5,1,18,Villanova,Utah State,TRUE
+5,1,19,Wisconsin,Wisconsin,FALSE
+5,1,20,Arkansas,Arkansas,FALSE
+5,1,21,NC State,NC State,FALSE
+5,1,22,Gonzaga,Gonzaga,FALSE
+5,1,23,Miami,Miami,FALSE
+5,1,24,Purdue,Purdue,FALSE
+5,1,25,Michigan,Michigan,FALSE
+5,1,26,Saint Louis,Saint Louis,FALSE
+5,1,27,Akron,Texas Tech,TRUE
+5,1,28,Alabama,Alabama,FALSE
+5,1,29,Miami-OH,Tennessee,TRUE
+5,1,30,Virginia,Virginia,FALSE
+5,1,31,Kentucky,Kentucky,FALSE
+5,1,32,Iowa State,Iowa State,FALSE
+5,2,33,Duke,Duke,FALSE
+5,2,34,Northern Iowa,Kansas,TRUE
+5,2,35,Louisville,Louisville,FALSE
+5,2,36,UCLA,UCLA,FALSE
+5,2,37,Florida,Florida,FALSE
+5,2,38,Vanderbilt,Vanderbilt,FALSE
+5,2,39,Illinois,Illinois,FALSE
+5,2,40,Houston,Houston,FALSE
+5,2,41,Arizona,Arizona,FALSE
+5,2,42,Arkansas,Arkansas,FALSE
+5,2,43,Gonzaga,Gonzaga,FALSE
+5,2,44,Purdue,Purdue,FALSE
+5,2,45,Saint Louis,Michigan,TRUE
+5,2,46,Alabama,Alabama,FALSE
+5,2,47,Miami-OH,Virginia,TRUE
+5,2,48,Iowa State,Iowa State,FALSE
+5,3,49,Duke,Duke,FALSE
+5,3,50,UCLA,UCLA,FALSE
+5,3,51,Florida,Vanderbilt,TRUE
+5,3,52,Illinois,Illinois,FALSE
+5,3,53,Arizona,Arizona,FALSE
+5,3,54,Gonzaga,Purdue,TRUE
+5,3,55,Alabama,Alabama,FALSE
+5,3,56,Miami-OH,Iowa State,TRUE
+5,4,57,Duke,Duke,FALSE
+5,4,58,Florida,Illinois,TRUE
+5,4,59,Arizona,Arizona,FALSE
+5,4,60,Alabama,Alabama,FALSE
+5,5,61,Florida,Duke,TRUE
+5,5,62,Arizona,Arizona,FALSE
+5,6,63,Florida,Arizona,TRUE
+6,1,1,Duke,Duke,FALSE
+6,1,2,Ohio State,Ohio State,FALSE
+6,1,3,Northern Iowa,St. John's,TRUE
+6,1,4,Kansas,Kansas,FALSE
+6,1,5,USF,Louisville,TRUE
+6,1,6,Michigan State,Michigan State,FALSE
+6,1,7,UCLA,UCLA,FALSE
+6,1,8,Connecticut,Connecticut,FALSE
+6,1,9,Florida,Florida,FALSE
+6,1,10,Iowa,Clemson,TRUE
+6,1,11,McNeese,Vanderbilt,TRUE
+6,1,12,Nebraska,Nebraska,FALSE
+6,1,13,North Carolina,North Carolina,FALSE
+6,1,14,Illinois,Illinois,FALSE
+6,1,15,Saint Mary's,Saint Mary's,FALSE
+6,1,16,Houston,Houston,FALSE
+6,1,17,Arizona,Arizona,FALSE
+6,1,18,Villanova,Utah State,TRUE
+6,1,19,Wisconsin,Wisconsin,FALSE
+6,1,20,Arkansas,Arkansas,FALSE
+6,1,21,NC State,NC State,FALSE
+6,1,22,Gonzaga,Gonzaga,FALSE
+6,1,23,Miami,Miami,FALSE
+6,1,24,Purdue,Purdue,FALSE
+6,1,25,Michigan,Michigan,FALSE
+6,1,26,Georgia,Saint Louis,TRUE
+6,1,27,Texas Tech,Texas Tech,FALSE
+6,1,28,Alabama,Alabama,FALSE
+6,1,29,Miami-OH,Tennessee,TRUE
+6,1,30,Virginia,Virginia,FALSE
+6,1,31,Kentucky,Kentucky,FALSE
+6,1,32,Iowa State,Iowa State,FALSE
+6,2,33,Duke,Duke,FALSE
+6,2,34,Kansas,Kansas,FALSE
+6,2,35,Michigan State,Michigan State,FALSE
+6,2,36,UCLA,UCLA,FALSE
+6,2,37,Florida,Florida,FALSE
+6,2,38,Nebraska,Nebraska,FALSE
+6,2,39,Illinois,Illinois,FALSE
+6,2,40,Houston,Houston,FALSE
+6,2,41,Arizona,Arizona,FALSE
+6,2,42,Wisconsin,Arkansas,TRUE
+6,2,43,Gonzaga,Gonzaga,FALSE
+6,2,44,Miami,Purdue,TRUE
+6,2,45,Michigan,Michigan,FALSE
+6,2,46,Texas Tech,Texas Tech,FALSE
+6,2,47,Virginia,Virginia,FALSE
+6,2,48,Kentucky,Iowa State,TRUE
+6,3,49,Duke,Duke,FALSE
+6,3,50,Michigan State,Michigan State,FALSE
+6,3,51,Florida,Florida,FALSE
+6,3,52,Illinois,Illinois,FALSE
+6,3,53,Wisconsin,Arizona,TRUE
+6,3,54,Gonzaga,Gonzaga,FALSE
+6,3,55,Michigan,Michigan,FALSE
+6,3,56,Kentucky,Virginia,TRUE
+6,4,57,Michigan State,Duke,TRUE
+6,4,58,Illinois,Illinois,FALSE
+6,4,59,Gonzaga,Gonzaga,FALSE
+6,4,60,Michigan,Michigan,FALSE
+6,5,61,Illinois,Illinois,FALSE
+6,5,62,Michigan,Michigan,FALSE
+6,6,63,Michigan,Michigan,FALSE
+7,1,1,Duke,Duke,FALSE
+7,1,2,Ohio State,Ohio State,FALSE
+7,1,3,St. John's,St. John's,FALSE
+7,1,4,Kansas,Kansas,FALSE
+7,1,5,Louisville,Louisville,FALSE
+7,1,6,Michigan State,Michigan State,FALSE
+7,1,7,UCLA,UCLA,FALSE
+7,1,8,Connecticut,Connecticut,FALSE
+7,1,9,Florida,Florida,FALSE
+7,1,10,Iowa,Clemson,TRUE
+7,1,11,Vanderbilt,Vanderbilt,FALSE
+7,1,12,Nebraska,Nebraska,FALSE
+7,1,13,VCU,North Carolina,TRUE
+7,1,14,Illinois,Illinois,FALSE
+7,1,15,Saint Mary's,Saint Mary's,FALSE
+7,1,16,Houston,Houston,FALSE
+7,1,17,Arizona,Arizona,FALSE
+7,1,18,Villanova,Utah State,TRUE
+7,1,19,Wisconsin,Wisconsin,FALSE
+7,1,20,Arkansas,Arkansas,FALSE
+7,1,21,NC State,NC State,FALSE
+7,1,22,Gonzaga,Gonzaga,FALSE
+7,1,23,Miami,Miami,FALSE
+7,1,24,Purdue,Purdue,FALSE
+7,1,25,Michigan,Michigan,FALSE
+7,1,26,Georgia,Saint Louis,TRUE
+7,1,27,Texas Tech,Texas Tech,FALSE
+7,1,28,Alabama,Alabama,FALSE
+7,1,29,Miami-OH,Tennessee,TRUE
+7,1,30,Virginia,Virginia,FALSE
+7,1,31,Kentucky,Kentucky,FALSE
+7,1,32,Iowa State,Iowa State,FALSE
+7,2,33,Duke,Duke,FALSE
+7,2,34,Kansas,Kansas,FALSE
+7,2,35,Michigan State,Michigan State,FALSE
+7,2,36,UCLA,UCLA,FALSE
+7,2,37,Florida,Florida,FALSE
+7,2,38,Nebraska,Vanderbilt,TRUE
+7,2,39,Illinois,Illinois,FALSE
+7,2,40,Houston,Houston,FALSE
+7,2,41,Arizona,Arizona,FALSE
+7,2,42,Wisconsin,Arkansas,TRUE
+7,2,43,Gonzaga,Gonzaga,FALSE
+7,2,44,Purdue,Purdue,FALSE
+7,2,45,Michigan,Michigan,FALSE
+7,2,46,Texas Tech,Texas Tech,FALSE
+7,2,47,Miami-OH,Virginia,TRUE
+7,2,48,Iowa State,Iowa State,FALSE
+7,3,49,Duke,Duke,FALSE
+7,3,50,Michigan State,Michigan State,FALSE
+7,3,51,Florida,Florida,FALSE
+7,3,52,Illinois,Illinois,FALSE
+7,3,53,Arizona,Arizona,FALSE
+7,3,54,Purdue,Purdue,FALSE
+7,3,55,Michigan,Michigan,FALSE
+7,3,56,Miami-OH,Iowa State,TRUE
+7,4,57,Michigan State,Duke,TRUE
+7,4,58,Illinois,Illinois,FALSE
+7,4,59,Purdue,Purdue,FALSE
+7,4,60,Michigan,Michigan,FALSE
+7,5,61,Michigan State,Illinois,TRUE
+7,5,62,Michigan,Michigan,FALSE
+7,6,63,Michigan,Michigan,FALSE
+8,1,1,Duke,Duke,FALSE
+8,1,2,Ohio State,Ohio State,FALSE
+8,1,3,Northern Iowa,St. John's,TRUE
+8,1,4,California Baptist,Kansas,TRUE
+8,1,5,Louisville,Louisville,FALSE
+8,1,6,Michigan State,Michigan State,FALSE
+8,1,7,UCLA,UCLA,FALSE
+8,1,8,Connecticut,Connecticut,FALSE
+8,1,9,Florida,Florida,FALSE
+8,1,10,Clemson,Clemson,FALSE
+8,1,11,Vanderbilt,Vanderbilt,FALSE
+8,1,12,Nebraska,Nebraska,FALSE
+8,1,13,VCU,North Carolina,TRUE
+8,1,14,Illinois,Illinois,FALSE
+8,1,15,Saint Mary's,Saint Mary's,FALSE
+8,1,16,Houston,Houston,FALSE
+8,1,17,Arizona,Arizona,FALSE
+8,1,18,Utah State,Utah State,FALSE
+8,1,19,Wisconsin,Wisconsin,FALSE
+8,1,20,Arkansas,Arkansas,FALSE
+8,1,21,BYU,NC State,TRUE
+8,1,22,Gonzaga,Gonzaga,FALSE
+8,1,23,Miami,Miami,FALSE
+8,1,24,Purdue,Purdue,FALSE
+8,1,25,Michigan,Michigan,FALSE
+8,1,26,Georgia,Saint Louis,TRUE
+8,1,27,Texas Tech,Texas Tech,FALSE
+8,1,28,Alabama,Alabama,FALSE
+8,1,29,Tennessee,Tennessee,FALSE
+8,1,30,Virginia,Virginia,FALSE
+8,1,31,Kentucky,Kentucky,FALSE
+8,1,32,Iowa State,Iowa State,FALSE
+8,2,33,Duke,Duke,FALSE
+8,2,34,Northern Iowa,Northern Iowa,FALSE
+8,2,35,Michigan State,Michigan State,FALSE
+8,2,36,UCLA,UCLA,FALSE
+8,2,37,Florida,Florida,FALSE
+8,2,38,Vanderbilt,Vanderbilt,FALSE
+8,2,39,VCU,Illinois,TRUE
+8,2,40,Saint Mary's,Houston,TRUE
+8,2,41,Arizona,Arizona,FALSE
+8,2,42,Arkansas,Arkansas,FALSE
+8,2,43,Gonzaga,Gonzaga,FALSE
+8,2,44,Purdue,Purdue,FALSE
+8,2,45,Michigan,Michigan,FALSE
+8,2,46,Texas Tech,Texas Tech,FALSE
+8,2,47,Virginia,Virginia,FALSE
+8,2,48,Kentucky,Iowa State,TRUE
+8,3,49,Duke,Duke,FALSE
+8,3,50,UCLA,Michigan State,TRUE
+8,3,51,Vanderbilt,Vanderbilt,FALSE
+8,3,52,Saint Mary's,Saint Mary's,FALSE
+8,3,53,Arizona,Arizona,FALSE
+8,3,54,Purdue,Purdue,FALSE
+8,3,55,Michigan,Michigan,FALSE
+8,3,56,Kentucky,Virginia,TRUE
+8,4,57,Duke,Duke,FALSE
+8,4,58,Saint Mary's,Vanderbilt,TRUE
+8,4,59,Arizona,Purdue,TRUE
+8,4,60,Michigan,Michigan,FALSE
+8,5,61,Duke,Saint Mary's,TRUE
+8,5,62,Michigan,Michigan,FALSE
+8,6,63,Michigan,Michigan,FALSE
+9,1,1,Duke,Duke,FALSE
+9,1,2,Ohio State,Ohio State,FALSE
+9,1,3,St. John's,St. John's,FALSE
+9,1,4,California Baptist,Kansas,TRUE
+9,1,5,Louisville,Louisville,FALSE
+9,1,6,Michigan State,Michigan State,FALSE
+9,1,7,UCLA,UCLA,FALSE
+9,1,8,Connecticut,Connecticut,FALSE
+9,1,9,Florida,Florida,FALSE
+9,1,10,Clemson,Clemson,FALSE
+9,1,11,McNeese,Vanderbilt,TRUE
+9,1,12,Nebraska,Nebraska,FALSE
+9,1,13,North Carolina,North Carolina,FALSE
+9,1,14,Illinois,Illinois,FALSE
+9,1,15,Saint Mary's,Saint Mary's,FALSE
+9,1,16,Houston,Houston,FALSE
+9,1,17,Arizona,Arizona,FALSE
+9,1,18,Utah State,Utah State,FALSE
+9,1,19,Wisconsin,Wisconsin,FALSE
+9,1,20,Arkansas,Arkansas,FALSE
+9,1,21,NC State,NC State,FALSE
+9,1,22,Gonzaga,Gonzaga,FALSE
+9,1,23,Miami,Miami,FALSE
+9,1,24,Purdue,Purdue,FALSE
+9,1,25,Michigan,Michigan,FALSE
+9,1,26,Saint Louis,Saint Louis,FALSE
+9,1,27,Akron,Texas Tech,TRUE
+9,1,28,Alabama,Alabama,FALSE
+9,1,29,Miami-OH,Tennessee,TRUE
+9,1,30,Virginia,Virginia,FALSE
+9,1,31,Kentucky,Kentucky,FALSE
+9,1,32,Iowa State,Iowa State,FALSE
+9,2,33,Duke,Duke,FALSE
+9,2,34,St. John's,St. John's,FALSE
+9,2,35,Louisville,Michigan State,TRUE
+9,2,36,Connecticut,UCLA,TRUE
+9,2,37,Florida,Florida,FALSE
+9,2,38,Nebraska,Nebraska,FALSE
+9,2,39,Illinois,Illinois,FALSE
+9,2,40,Saint Mary's,Houston,TRUE
+9,2,41,Arizona,Arizona,FALSE
+9,2,42,Arkansas,Arkansas,FALSE
+9,2,43,Gonzaga,Gonzaga,FALSE
+9,2,44,Purdue,Purdue,FALSE
+9,2,45,Michigan,Michigan,FALSE
+9,2,46,Alabama,Alabama,FALSE
+9,2,47,Virginia,Virginia,FALSE
+9,2,48,Kentucky,Iowa State,TRUE
+9,3,49,Duke,Duke,FALSE
+9,3,50,Connecticut,Connecticut,FALSE
+9,3,51,Florida,Florida,FALSE
+9,3,52,Illinois,Illinois,FALSE
+9,3,53,Arizona,Arizona,FALSE
+9,3,54,Purdue,Purdue,FALSE
+9,3,55,Michigan,Michigan,FALSE
+9,3,56,Virginia,Virginia,FALSE
+9,4,57,Duke,Duke,FALSE
+9,4,58,Florida,Illinois,TRUE
+9,4,59,Purdue,Purdue,FALSE
+9,4,60,Michigan,Michigan,FALSE
+9,5,61,Duke,Duke,FALSE
+9,5,62,Purdue,Michigan,TRUE
+9,6,63,Purdue,Purdue,FALSE
+10,1,1,Duke,Duke,FALSE
+10,1,2,Ohio State,Ohio State,FALSE
+10,1,3,St. John's,St. John's,FALSE
+10,1,4,Kansas,Kansas,FALSE
+10,1,5,Louisville,Louisville,FALSE
+10,1,6,North Dakota State,Michigan State,TRUE
+10,1,7,UCLA,UCLA,FALSE
+10,1,8,Connecticut,Connecticut,FALSE
+10,1,9,Florida,Florida,FALSE
+10,1,10,Iowa,Clemson,TRUE
+10,1,11,Vanderbilt,Vanderbilt,FALSE
+10,1,12,Nebraska,Nebraska,FALSE
+10,1,13,VCU,North Carolina,TRUE
+10,1,14,Illinois,Illinois,FALSE
+10,1,15,Saint Mary's,Saint Mary's,FALSE
+10,1,16,Houston,Houston,FALSE
+10,1,17,Arizona,Arizona,FALSE
+10,1,18,Utah State,Utah State,FALSE
+10,1,19,Wisconsin,Wisconsin,FALSE
+10,1,20,Arkansas,Arkansas,FALSE
+10,1,21,BYU,NC State,TRUE
+10,1,22,Gonzaga,Gonzaga,FALSE
+10,1,23,Miami,Miami,FALSE
+10,1,24,Purdue,Purdue,FALSE
+10,1,25,Michigan,Michigan,FALSE
+10,1,26,Georgia,Saint Louis,TRUE
+10,1,27,Texas Tech,Texas Tech,FALSE
+10,1,28,Alabama,Alabama,FALSE
+10,1,29,Miami-OH,Tennessee,TRUE
+10,1,30,Virginia,Virginia,FALSE
+10,1,31,Kentucky,Kentucky,FALSE
+10,1,32,Iowa State,Iowa State,FALSE
+10,2,33,Ohio State,Duke,TRUE
+10,2,34,St. John's,Kansas,TRUE
+10,2,35,Louisville,Louisville,FALSE
+10,2,36,UCLA,UCLA,FALSE
+10,2,37,Florida,Florida,FALSE
+10,2,38,Vanderbilt,Vanderbilt,FALSE
+10,2,39,Illinois,Illinois,FALSE
+10,2,40,Saint Mary's,Houston,TRUE
+10,2,41,Arizona,Arizona,FALSE
+10,2,42,Arkansas,Arkansas,FALSE
+10,2,43,Gonzaga,Gonzaga,FALSE
+10,2,44,Purdue,Purdue,FALSE
+10,2,45,Michigan,Michigan,FALSE
+10,2,46,Texas Tech,Texas Tech,FALSE
+10,2,47,Virginia,Virginia,FALSE
+10,2,48,Kentucky,Iowa State,TRUE
+10,3,49,St. John's,St. John's,FALSE
+10,3,50,Louisville,UCLA,TRUE
+10,3,51,Vanderbilt,Vanderbilt,FALSE
+10,3,52,Illinois,Illinois,FALSE
+10,3,53,Arizona,Arizona,FALSE
+10,3,54,Gonzaga,Purdue,TRUE
+10,3,55,Texas Tech,Michigan,TRUE
+10,3,56,Virginia,Virginia,FALSE
+10,4,57,St. John's,St. John's,FALSE
+10,4,58,Illinois,Illinois,FALSE
+10,4,59,Arizona,Arizona,FALSE
+10,4,60,Texas Tech,Texas Tech,FALSE
+10,5,61,Illinois,Illinois,FALSE
+10,5,62,Arizona,Arizona,FALSE
+10,6,63,Illinois,Arizona,TRUE
