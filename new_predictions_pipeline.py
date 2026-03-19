@@ -206,7 +206,7 @@ def load_models():
 # Extract current team info from spreadsheet
 #=====================================================
 def load_data():
-    filepath = 'C:/Users/ajc20/OneDrive/Desktop/NCAA 2025-26.xlsx'
+    filepath = 'NCAA 2025-26.xlsx'
     main_df = pd.read_excel(filepath, sheet_name='BPI+')
     map_df = pd.read_excel(filepath, sheet_name='mapping')
     bracket_df = pd.read_excel(filepath, sheet_name='Bracket')
