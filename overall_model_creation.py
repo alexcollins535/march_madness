@@ -27,7 +27,7 @@ np.random.seed(SEED)
 CV_SPLITTER = KFold(n_splits=10, shuffle=True, random_state=SEED)
 
 # Cached file for Monte Carlo Simulation results
-MC_CACHE_FILE = 'cache_files\mc_meta_features_v4.csv'
+MC_CACHE_FILE = r'cache_files\mc_meta_features_v4.csv'
 
 class componentModel:
     def __init__(self, target_variable):
