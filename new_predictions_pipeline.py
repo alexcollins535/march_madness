@@ -57,14 +57,17 @@ def get_possible_opponents(team, round_col, bracket_df):
     team_row = bracket_df[bracket_df['Team'] == team].iloc[0]
     game_id = team_row[round_col]
 
-    group = bracket_df[bracket_df[round_col] == game_id]
+    group = bracket_df[bracket_df[round_col] == game_id].copy()
 
+    # Use Round1_Game to determine bracket position within the group
+    # — this is stable regardless of round depth
+    group = group.sort_values('Round1_Game')
     teams = group['Team'].tolist()
 
-    idx = teams.index(team)
+    team_idx = teams.index(team)
     half = len(teams) // 2
 
-    if idx < half:
+    if team_idx < half:
         opponents = teams[half:]
     else:
         opponents = teams[:half]
@@ -80,6 +83,17 @@ def load_cache():
 def save_cache(cache):
     with open(CACHE_FILE, 'wb') as f:
         pickle.dump(cache, f)
+
+def load_known_results():
+    if os.path.exists(RESULTS_FILE):
+        with open(RESULTS_FILE, 'rb') as f:
+            return pickle.load(f)
+    return {}
+
+def save_known_results(known_results):
+    with open(RESULTS_FILE, 'wb') as f:
+        pickle.dump(known_results, f)
+    print(f'[INFO] Saved {len(known_results)} result(s) to {RESULTS_FILE}')
 
 def hash_matchup(team1_series, team2_series):
     combined = pd.concat([team1_series, team2_series])
@@ -315,65 +329,140 @@ def resolve_play_in_games(bracket_df, team_to_idx_map, merged,
 #=====================================================
 # Functions for team outlook by round
 #=====================================================
-def compute_round_win_probabilities(team, round_col, bracket_df, team_to_idx_map, merged,  mc_model, feature_list, wins_model):
+def compute_reach_probability(team, round_num, bracket_df, team_to_idx_map, merged,
+                               mc_model, feature_list, wins_model, known_results=None):
+    '''
+    P(team reaches round_num).
+    If a known result exists for a prior game, uses that instead of probabilities.
+    '''
+    if known_results is None:
+        known_results = {}
 
-    opponents = get_possible_opponents(team, round_col, bracket_df)
+    if round_num == 1:
+        return 1.0
 
-    win_probs = []
+    # Check if we know the result of the game that determined entry into round_num
+    prev_round_num = round_num - 1
+    prev_round_col = f'Round{prev_round_num}_Game'
+    team_row = bracket_df[bracket_df['Team'] == team].iloc[0]
+    prev_game_id = team_row[prev_round_col]
 
-    for opp in opponents:
+    if (prev_round_num, prev_game_id) in known_results:
+        actual_winner = known_results[(prev_round_num, prev_game_id)]
+        if actual_winner == team:
+            # Team won this game — now check if they reached the round before that
+            return compute_reach_probability(
+                team, prev_round_num, bracket_df, team_to_idx_map, merged,
+                mc_model, feature_list, wins_model, known_results
+            )
+        else:
+            # Team lost — they cannot reach round_num
+            return 0.0
 
-        team1_series, team2_series = prep_team1_team2_series(
+    # No known result — compute probabilistically
+    p_team_reached_prev = compute_reach_probability(
+        team, prev_round_num, bracket_df, team_to_idx_map, merged,
+        mc_model, feature_list, wins_model, known_results
+    )
+
+    prev_opponents = get_possible_opponents(team, prev_round_col, bracket_df)
+
+    p_win_prev_round = 0.0
+    for opp in prev_opponents:
+        # If we know this opponent lost already, their reach prob is 0
+        p_opp_reached = compute_reach_probability(
+            opp, prev_round_num, bracket_df, team_to_idx_map, merged,
+            mc_model, feature_list, wins_model, known_results
+        )
+
+        t1_series, t2_series = prep_team1_team2_series(
             team, opp, team_to_idx_map, merged
         )
-
-        team_prob, opp_prob = compute_win_probas(
-            team1_series, team2_series,
+        p_beat_opp, _ = compute_win_probas(
+            t1_series, t2_series,
             mc_model, feature_list, wins_model
         )
+        p_win_prev_round += p_beat_opp * p_opp_reached
 
-        win_probs.append(team_prob)
+    return p_team_reached_prev * p_win_prev_round
 
-    if len(win_probs) == 0:
+def compute_round_win_probabilities(team, round_col, bracket_df, team_to_idx_map, merged,
+                                     mc_model, feature_list, wins_model, known_results=None):
+    if known_results is None:
+        known_results = {}
+
+    round_num = int(round_col.replace('Round', '').replace('_Game', ''))
+    opponents = get_possible_opponents(team, round_col, bracket_df)
+
+    p_team_reached = compute_reach_probability(
+        team, round_num, bracket_df, team_to_idx_map, merged,
+        mc_model, feature_list, wins_model, known_results
+    )
+
+    win_probs = []
+    reach_probs = []
+
+    for opp in opponents:
+        t1_series, t2_series = prep_team1_team2_series(
+            team, opp, team_to_idx_map, merged
+        )
+        p_beat_opp, _ = compute_win_probas(
+            t1_series, t2_series,
+            mc_model, feature_list, wins_model
+        )
+        p_opp_reached = compute_reach_probability(
+            opp, round_num, bracket_df, team_to_idx_map, merged,
+            mc_model, feature_list, wins_model, known_results
+        )
+        win_probs.append(p_beat_opp)
+        reach_probs.append(p_opp_reached)
+
+    if not win_probs:
         return None
+
+    weighted_win_prob = p_team_reached * sum(
+        p_win * p_reach for p_win, p_reach in zip(win_probs, reach_probs)
+    )
 
     return {
         'opponents': opponents,
         'individual_probs': win_probs,
-        'avg_win_prob': np.mean(win_probs),
-        'median_win_prob': np.median(win_probs)
+        'reach_probs': reach_probs,
+        'p_team_reached': p_team_reached,
+        'weighted_win_prob': weighted_win_prob,
+        'reach_probs_sum': sum(reach_probs)
     }
 
-def compute_team_round_outlook(team, bracket_df, team_to_idx_map, merged, mc_model, feature_list, wins_model, rounds=['1', '2', '3', '4']):
+def compute_team_round_outlook(team, bracket_df, team_to_idx_map, merged, mc_model,
+                                feature_list, wins_model, rounds=['1', '2', '3', '4'],
+                                known_results=None):
+    if known_results is None:
+        known_results = {}
 
-    round_strings = []
-    wc_string = 'Round*_Game'
-    for string in rounds:
-        round_name = wc_string.replace('*', string)
-        round_strings.append(round_name)
-
-    # Purposefully skipping Rounds 5 and 6 (Final Four, limited merit in evaluating half the bracket)
-
+    round_strings = [f'Round{r}_Game' for r in rounds]
     results = {}
 
     for i, r in enumerate(round_strings):
-        print(f'[INFO] Computing Round {i+1}...')
-
+        print(f'[INFO] Computing Round {rounds[i]}...')
         results[r] = compute_round_win_probabilities(
             team, r, bracket_df,
             team_to_idx_map, merged,
-            mc_model, feature_list, wins_model
+            mc_model, feature_list, wins_model,
+            known_results
         )
 
     return results
 
-def run_team_outlook_for_rounds(team1, rounds, merged, team_to_idx_map, mc_model, feature_list, wins_model, bracket_df):
-    # Wrapper for compute_team_round_outlook
+def run_team_outlook_for_rounds(team1, rounds, merged, team_to_idx_map, mc_model,
+                                 feature_list, wins_model, bracket_df, known_results=None):
+    if known_results is None:
+        known_results = {}
+
     results = compute_team_round_outlook(
         team1, bracket_df,
         team_to_idx_map, merged,
         mc_model, feature_list, wins_model,
-        rounds
+        rounds, known_results
     )
 
     for round_name, info in results.items():
@@ -381,12 +470,13 @@ def run_team_outlook_for_rounds(team1, rounds, merged, team_to_idx_map, mc_model
             continue
 
         print(f'\n{round_name}')
+        print(f'P({team1} reaches this round): {info["p_team_reached"]:.3f}')
         print('Possible Opponents:', info['opponents'])
 
-        for opp, p in zip(info['opponents'], info['individual_probs']):
-            print(f'  vs {opp}: {p:.3f}')
+        for opp, p_win, p_reach in zip(info['opponents'], info['individual_probs'], info['reach_probs']):
+            print(f'  vs {opp}: win prob = {p_win:.3f}, opp reach prob = {p_reach:.3f}')
 
-        print(f'Average Win Probability: {info['avg_win_prob']:.3f}')
+        print(f'Weighted Win Probability: {info["weighted_win_prob"]:.3f}')
 
 def compute_round_matchup_probabilities(round_num, bracket_df, team_to_idx_map, merged,
                                          mc_model, feature_list, wins_model,
@@ -495,21 +585,63 @@ def prompt_prior_round_winners(round_num, bracket_df, team_to_idx_map):
 
     return prior_winners
 
+def prompt_known_results(bracket_df, team_to_idx_map, ci_team_lookup, merged):
+    '''
+    Prompts the user to enter actual game results that have already occurred.
+    Starts from whatever is already saved so only new results need to be entered.
+    Returns a dict of {(round_num, game_id): winner_team_name}.
+    '''
+    # Start from whatever is already saved so the user only adds new results
+    known_results = load_known_results()
+
+    print('\nEnter known results. Press Enter to skip a game (result unknown).')
+
+    for round_num, round_col in enumerate(ROUND_COLS, start=1):
+        game_ids = bracket_df[round_col].dropna().unique()
+        round_complete = True
+
+        for game_id in sorted(game_ids):
+            participants = bracket_df[
+                bracket_df[round_col] == game_id
+            ]['Team'].tolist()
+
+            if len(participants) != 2:
+                continue
+
+            # Show existing result if already recorded
+            existing = known_results.get((round_num, game_id))
+            existing_str = f' [current: {existing}]' if existing else ''
+            prompt = f'  Round {round_num} Game {game_id} ({" vs ".join(participants)}){existing_str}: '
+
+            while True:
+                winner_input = input(prompt).strip()
+
+                if winner_input == '':
+                    # Keep existing result if present, otherwise mark incomplete
+                    if not existing:
+                        round_complete = False
+                    break
+
+                resolved = resolve_team_input(winner_input, ci_team_lookup, team_to_idx_map)
+                if resolved is not None:
+                    full_name = merged.iloc[team_to_idx_map[resolved]]['Team']
+                    if full_name in participants:
+                        known_results[(round_num, game_id)] = full_name
+                        break
+                    else:
+                        print(f'    {full_name} is not a participant in this game. Options: {participants}')
+                else:
+                    print(f'    Invalid input. Use team name or INI. Options: {participants}')
+
+        if not round_complete:
+            break
+
+    print(f'\n[INFO] {len(known_results)} result(s) recorded.')
+    return known_results
+
 #=====================================================
 # BRACKET GENERATION
 #=====================================================
-
-ROUND_COLS = [
-    'Round1_Game',
-    'Round2_Game', 
-    'Round3_Game',
-    'Round4_Game',
-    'Round5_Game',
-    'Round6_Game'
-]
-
-HISTORICAL_UPSET_BUDGETS = None  # Will be computed from CSV
-
 def compute_historical_budgets(csv_path='historical_team_win_probabilities.csv'):
     df = pd.read_csv(csv_path)
 
@@ -753,12 +885,103 @@ def precompute_quarter_matchup_cache(bracket_df, merged, team_to_idx_map,
     print(f'\n[INFO] All quarters precomputed. '
           f'Total mc_cache entries: {len(mc_cache)}')
 
+def print_matchup_features(team1, team2, team_to_idx_map, merged,
+                            mc_model, feature_list, wins_model):
+    '''
+    Prints the feature values used by the model for a specific matchup,
+    from team1's perspective.
+    '''
+    t1_series, t2_series = prep_team1_team2_series(team1, team2, team_to_idx_map, merged)
+
+    # Canonicalize using raw rows (for cache key consistency with compute_win_probas)
+    base_t1_raw = merged.iloc[team_to_idx_map[team1]].copy()
+    base_t2_raw = merged.iloc[team_to_idx_map[team2]].copy()
+    base_t1_raw, base_t2_raw, flipped = canonicalize_matchup(base_t1_raw, base_t2_raw)
+    cache_key = hash_matchup(base_t1_raw, base_t2_raw)
+
+    # Canonicalize prefixed series to match
+    if flipped:
+        base_t1_prefixed, base_t2_prefixed = t2_series.copy(), t1_series.copy()
+    else:
+        base_t1_prefixed, base_t2_prefixed = t1_series.copy(), t2_series.copy()
+
+    if cache_key in mc_cache:
+        teamA_wins, teamB_wins = mc_cache[cache_key]
+    else:
+        teamA_wins, teamB_wins = mc_model.run_montecarlo_comparison(base_t1_prefixed, base_t2_prefixed, 1000)
+        mc_cache[cache_key] = (teamA_wins, teamB_wins)
+
+    team1_wins = teamB_wins if flipped else teamA_wins
+    team2_wins = teamA_wins if flipped else teamB_wins
+
+    # Build meta features for both perspectives
+    def build_meta(team_series, team_wins, opp_wins, seed, opp_seed):
+        mc_win_prob = team_wins / (team_wins + opp_wins)
+        return {
+            'SEED_DIFF':      seed - opp_seed,
+            'MC_WIN_PROB':    mc_win_prob,
+            'FT_RATE_DIFF':   team_series['T1_FTPG'] / team_series['T1_FGA'] - team_series['T2_FTPG'] / team_series['T2_FGA'],
+            '3PT_RATE_DIFF':  team_series['T1_3PTA'] / team_series['T1_FGA'] - team_series['T2_3PTA'] / team_series['T2_FGA'],
+            'AVG_TPG':        (team_series['T1_TPG'] + team_series['T2_TPG']) / 2,
+            'AVG_FB':         (team_series['T1_FB']  + team_series['T2_FB'])  / 2,
+            'DIFF_SM':        team_series['T1_SM']   - team_series['T2_SM'],
+            'DIFF_FT%':       team_series['T1_FT%']  - team_series['T2_FT%'],
+            'DIFF_FTA':       team_series['T1_FTA']  - team_series['T2_FTA'],
+            'DIFF_3PPG':      team_series['T1_3PPG'] - team_series['T2_3PPG'],
+            'DIFF_TM':        team_series['T1_TM']   - team_series['T2_TM'],
+            'DIFF_TPG':       team_series['T1_TPG']  - team_series['T2_TPG'],
+        }
+
+    t1_meta = build_meta(t1_series, team1_wins, team2_wins,
+                         merged.iloc[team_to_idx_map[team1]]['Seed'],
+                         merged.iloc[team_to_idx_map[team2]]['Seed'])
+    t2_meta = build_meta(t2_series, team2_wins, team1_wins,
+                         merged.iloc[team_to_idx_map[team2]]['Seed'],
+                         merged.iloc[team_to_idx_map[team1]]['Seed'])
+
+    t1_full = pd.concat([t1_series, pd.Series(t1_meta)])
+    t2_full = pd.concat([t2_series, pd.Series(t2_meta)])
+
+    t1_features = pd.DataFrame([t1_full[feature_list].to_dict()])
+    t2_features = pd.DataFrame([t2_full[feature_list].to_dict()])
+
+    t1_proba = wins_model.predict_proba(t1_features)[0, 1]
+    t2_proba = wins_model.predict_proba(t2_features)[0, 1]
+    t1_norm = t1_proba / (t1_proba + t2_proba)
+    t2_norm = t2_proba / (t1_proba + t2_proba)
+
+    # Print
+    col_w = 32
+    header = f'  {"Feature":<25} {team1:>{col_w}} {team2:>{col_w}}'
+    print(f'\nMatchup Features: {team1} vs {team2}')
+    print('=' * len(header))
+    print(header)
+    print('-' * len(header))
+    for feat in feature_list:
+        v1 = t1_features[feat].iloc[0]
+        v2 = t2_features[feat].iloc[0]
+        print(f'  {feat:<25} {v1:>{col_w}.4f} {v2:>{col_w}.4f}')
+    print('=' * len(header))
+    print(f'  {"Win Probability":<25} {t1_norm:>{col_w}.3f} {t2_norm:>{col_w}.3f}')
+    print('=' * len(header))
+
 #=====================================================
 # Main Routine
 #=====================================================
 CACHE_FILE = r'cache_files\mc_matchup_cache.pkl'
-mc_cache = load_cache()
+ROUND_COLS = [
+    'Round1_Game',
+    'Round2_Game', 
+    'Round3_Game',
+    'Round4_Game',
+    'Round5_Game',
+    'Round6_Game'
+]
+HISTORICAL_UPSET_BUDGETS = None  # Will be computed from CSV
+RESULTS_FILE = r'cache_files\known_results.pkl'
 
+mc_cache = load_cache()
+known_results = load_known_results()
 
 # Load all teams current data
 print(f'[INFO] Loading data...')
@@ -778,7 +1001,7 @@ bracket_df = resolve_play_in_games(
     wins_model
 )
 
-menu_string = ('=' * 60) + '\nChoose method:\n  1.) Manual bracket generation\n  2.) Automatic bracket generation\n  3.) Fill the cache\n  4.) Print all matchup probabilities for a round\n' + ('=' * 60)
+menu_string = ('=' * 60) + '\nChoose routine:\n  1.) Manual bracket generation\n  2.) Automatic bracket generation\n  3.) Fill the cache\n  4.) Input known results\n' + ('=' * 60)
 valid = False
 while not valid:
     print(menu_string)
@@ -789,81 +1012,110 @@ while not valid:
         print('Invalid input. Enter 1, 2, 3, or 4.\n\n\n')
 
 if method_selection == '1':
-    # Request user input of team name or INI
-    valid_names = team_to_idx_map.keys()
+    valid_names = set(team_to_idx_map.keys())
+
     valid = False
     while not valid:
-        team1 = input('\nInput Team1: ')
-        team1 = resolve_team_input(team1, ci_team_lookup, team_to_idx_map)
-        if team1 in valid_names:
-            valid = True
-        else:
-            print('Invalid input. Use team name or INI.')
+        teams_input = input('\nInput Team(s) (comma separated): ')
+        raw_teams = [t.strip() for t in teams_input.split(',')]
 
-    menu_string = ('=' * 60) + '\nChoose routine:\n  1.) Choose Team2 for projection\n  2.) Run projections for all potential matchups\n  3.) Run projections for select rounds\n' + ('=' * 60)
+        resolved_teams = []
+        bad_input = False
+        for raw in raw_teams:
+            resolved = resolve_team_input(raw, ci_team_lookup, team_to_idx_map)
+            if resolved is None:
+                print(f'Invalid input: {raw}. Use team name or INI.')
+                bad_input = True
+                break
+            resolved_teams.append(merged.iloc[team_to_idx_map[resolved]]['Team'])
+
+        if not bad_input:
+            valid = True
+
+    menu_string = ('=' * 60) + '\nChoose routine:\n  1.) Choose Team2 for projection\n  2.) Run projections for all potential matchups\n  3.) Run projections for select rounds\n  4.) Print matchup features\n' + ('=' * 60)
     valid = False
     while not valid:
         print(menu_string)
         menu_selection = input('\nSelection: ')
-        if menu_selection in ['1', '2', '3']:
+        if menu_selection in ['1', '2', '3', '4']:
             valid = True
         else:
-            print('Invalid input. Enter 1, 2, or 3.\n\n\n')
+            print('Invalid input. Enter 1, 2, 3, or 4.\n\n\n')
 
     if menu_selection == '1':
-        # choose team2 for 1v1 projection
+        if len(resolved_teams) > 1:
+            print('Option 1 requires exactly one team. Using first team:', resolved_teams[0])
+        team1 = resolved_teams[0]
+
         valid = False
         while not valid:
             team2 = input('\nInput Team2: ')
             team2 = resolve_team_input(team2, ci_team_lookup, team_to_idx_map)
-            if team2 in valid_names:
+            if team2 is not None:
                 valid = True
             else:
                 print('Invalid input. Use team name or INI.')
-
-        # Run with selected 1v1 matchup
-        team1_series, team2_series = prep_team1_team2_series(team1, team2, team_to_idx_map, merged)
-        team1_proba, team2_proba = compute_win_probas(team1_series, team2_series, mc_model, feature_list, wins_model)
-        
-        # Force the formatting to be Team not INI
-        team1 = merged.iloc[team_to_idx_map[team1]]['Team']
         team2 = merged.iloc[team_to_idx_map[team2]]['Team']
 
-        winner = team1 if team1_proba > team2_proba else team2
+        team1_series, team2_series = prep_team1_team2_series(team1, team2, team_to_idx_map, merged)
+        team1_proba, team2_proba = compute_win_probas(team1_series, team2_series, mc_model, feature_list, wins_model)
 
+        winner = team1 if team1_proba > team2_proba else team2
         print(f'{team1} win probability: {team1_proba:.3f}\n{team2} win probability: {team2_proba:.3f}\n\nModel favors {winner}.')
 
     elif menu_selection in ['2', '3']:
         if menu_selection == '2':
             rounds = ['1', '2', '3', '4']
         else:
-            # Choose rounds
             valid = False
             while not valid:
                 rounds_input = input('\nEvaluate potential matchups for round(s): ')
-                rounds = rounds_input.split(', ')
-                rounds = [x.strip() for x in rounds]
-
-                bad_value = False
-                for round in rounds:
-                    if round not in ['1', '2', '3', '4']:
-                        bad_value = True
-                        break
-                if not bad_value:
+                rounds = [x.strip() for x in rounds_input.split(',')]
+                if all(r in ['1', '2', '3', '4'] for r in rounds):
                     valid = True
                 else:
                     print('Invalid input. Comma separated list can only contain values 1 through 4.\n\n\n')
-        # Run with selected list of rounds
-        run_team_outlook_for_rounds(team1, rounds, merged, team_to_idx_map, mc_model, feature_list, wins_model, bracket_df)
+
+        # Optionally collect known results
+        print(f'\n[INFO] {len(known_results)} known result(s) currently loaded.')
+        use_results = input('Update known results? (y/n): ').strip().lower()
+        if use_results == 'y':
+            known_results = prompt_known_results(bracket_df, team_to_idx_map, ci_team_lookup, merged)
+            save_known_results(known_results)
+
+        for team1 in resolved_teams:
+            print(f'\n{"=" * 60}\nOutlook for {team1}\n{"=" * 60}')
+            run_team_outlook_for_rounds(team1, rounds, merged, team_to_idx_map, mc_model,
+                                         feature_list, wins_model, bracket_df, known_results)
+
+    elif menu_selection == '4':
+        if len(resolved_teams) > 1:
+            print('Option 4 requires exactly one team. Using first team:', resolved_teams[0])
+        team1 = resolved_teams[0]
+
+        valid = False
+        while not valid:
+            team2 = input('\nInput Team2: ')
+            team2 = resolve_team_input(team2, ci_team_lookup, team_to_idx_map)
+            if team2 is not None:
+                valid = True
+            else:
+                print('Invalid input. Use team name or INI.')
+        team2 = merged.iloc[team_to_idx_map[team2]]['Team']
+
+        print_matchup_features(team1, team2, team_to_idx_map, merged,
+                                mc_model, feature_list, wins_model)
 
     save_cache(mc_cache)
+
+
 
 elif method_selection == '2':
     # Compute historical upset budgets from past results
     print('[INFO] Computing historical upset budgets...')
     upset_budgets = compute_historical_budgets('historical_team_win_probabilities.csv')
 
-    # Generate 25 diverse brackets
+    # Generate diverse brackets
     print('[INFO] Generating brackets...')
     all_brackets = generate_diverse_brackets(
         n_brackets=10,
@@ -876,7 +1128,6 @@ elif method_selection == '2':
         upset_budgets=upset_budgets
     )
 
-    # Export
     export_brackets(all_brackets, bracket_df)
     save_cache(mc_cache)
 
@@ -893,26 +1144,31 @@ elif method_selection == '3':
     save_cache(mc_cache)
 
 elif method_selection == '4':
-    # Choose round
+    results_menu_string = ('=' * 60) + '\nManage known results:\n  1.) View current results\n  2.) Update results\n  3.) Clear all results\n' + ('=' * 60)
     valid = False
     while not valid:
-        round_input = input('\nPrint matchups for round (1-6): ').strip()
-        if round_input in [str(r) for r in range(1, 7)]:
+        print(results_menu_string)
+        results_selection = input('\nSelection: ')
+        if results_selection in ['1', '2', '3']:
             valid = True
         else:
-            print('Invalid input. Enter a number from 1 to 6.')
+            print('Invalid input. Enter 1, 2, or 3.\n\n\n')
 
-    round_num = int(round_input)
+    if results_selection == '1':
+        if not known_results:
+            print('\nNo results currently recorded.')
+        else:
+            print(f'\n{len(known_results)} result(s) on record:')
+            for (round_num, game_id), winner in sorted(known_results.items()):
+                print(f'  Round {round_num} Game {game_id}: {winner}')
 
-    # Collect prior round results if needed
-    prior_winners = None
-    if round_num > 1:
-        prior_winners = prompt_prior_round_winners(round_num, bracket_df, team_to_idx_map)
+    elif results_selection == '2':
+        known_results = prompt_known_results(bracket_df, team_to_idx_map, ci_team_lookup, merged)
+        save_known_results(known_results)
 
-    compute_round_matchup_probabilities(
-        round_num, bracket_df, team_to_idx_map, merged,
-        mc_model, feature_list, wins_model,
-        prior_winners=prior_winners
-    )
-
-    save_cache(mc_cache)
+    elif results_selection == '3':
+        confirm = input('\nAre you sure you want to clear all results? (y/n): ').strip().lower()
+        if confirm == 'y':
+            known_results = {}
+            save_known_results(known_results)
+            print('[INFO] All results cleared.')
