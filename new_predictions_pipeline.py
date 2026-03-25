@@ -640,10 +640,21 @@ def prompt_known_results(bracket_df, team_to_idx_map, ci_team_lookup, merged):
     return known_results
 
 #=====================================================
-# BRACKET GENERATION
+# Bracket Generation
 #=====================================================
 def compute_historical_budgets(csv_path='historical_team_win_probabilities.csv'):
     df = pd.read_csv(csv_path)
+    
+    # Add column for Game ID
+    base_pattern = np.arange(1, 68) # Up to 67
+    repeated_elements = np.repeat(base_pattern, 2)
+    final_pattern = np.tile(repeated_elements, 3)
+    df['Game ID'] = final_pattern
+
+    # Add column for Year
+    base_pattern = np.arange(2023, 2026) # Three years
+    final_pattern = np.repeat(base_pattern, 67 * 2) # Repeat 67 * 2 times each
+    df['Year'] = final_pattern
 
     def assign_round(game_id):
         if game_id <= 4:    return 0
@@ -894,16 +905,8 @@ def print_matchup_features(team1, team2, team_to_idx_map, merged,
     t1_series, t2_series = prep_team1_team2_series(team1, team2, team_to_idx_map, merged)
 
     # Canonicalize using raw rows (for cache key consistency with compute_win_probas)
-    base_t1_raw = merged.iloc[team_to_idx_map[team1]].copy()
-    base_t2_raw = merged.iloc[team_to_idx_map[team2]].copy()
-    base_t1_raw, base_t2_raw, flipped = canonicalize_matchup(base_t1_raw, base_t2_raw)
-    cache_key = hash_matchup(base_t1_raw, base_t2_raw)
-
-    # Canonicalize prefixed series to match
-    if flipped:
-        base_t1_prefixed, base_t2_prefixed = t2_series.copy(), t1_series.copy()
-    else:
-        base_t1_prefixed, base_t2_prefixed = t1_series.copy(), t2_series.copy()
+    base_t1_prefixed, base_t2_prefixed, flipped = canonicalize_matchup(t1_series.copy(), t2_series.copy())
+    cache_key = hash_matchup(base_t1_prefixed, base_t2_prefixed)
 
     if cache_key in mc_cache:
         teamA_wins, teamB_wins = mc_cache[cache_key]
@@ -914,6 +917,42 @@ def print_matchup_features(team1, team2, team_to_idx_map, merged,
     team1_wins = teamB_wins if flipped else teamA_wins
     team2_wins = teamA_wins if flipped else teamB_wins
 
+    # Compute the predicted components for the MC simulation and print
+    t1_comp = t1_series.copy()
+    t2_comp = t2_series.copy()
+
+    avg_poss = (
+        mc_model.target_poss_model.generate_preds(t1_comp, noise_scale=0.0) +
+        mc_model.target_poss_model.generate_preds(t2_comp, noise_scale=0.0)
+    ) / 2
+    t1_comp['TARGET POSS'] = avg_poss
+    t2_comp['TARGET POSS'] = avg_poss
+
+    component_labels = ['POSS', 'FGA', '3PTA', '3PT%', 'FTA', 'FT%', '2PT%']
+    component_models = [
+        mc_model.target_poss_model,
+        mc_model.target_fga_model,
+        mc_model.target_3pta_model,
+        mc_model.target_3ptpct_model,
+        mc_model.target_fta_model,
+        mc_model.target_ftpct_model,
+        mc_model.target_2ptpct_model,
+    ]
+
+    print(f'\nPredicted Game Components: {team1} vs {team2}')
+    comp_header = f'  {"Component":<15} {team1:>20} {team2:>20}'
+    print('=' * len(comp_header))
+    print(comp_header)
+    print('-' * len(comp_header))
+    for label, comp_model in zip(component_labels, component_models):
+        v1 = comp_model.generate_preds(t1_comp, noise_scale=0.0)
+        v2 = comp_model.generate_preds(t2_comp, noise_scale=0.0)
+        print(f'  {label:<15} {v1:>20.3f} {v2:>20.3f}')
+        if label == 'FGA':
+            t1_comp['TARGET FGA'] = v1
+            t2_comp['TARGET FGA'] = v2
+    print('=' * len(comp_header))
+    
     # Build meta features for both perspectives
     def build_meta(team_series, team_wins, opp_wins, seed, opp_seed):
         mc_win_prob = team_wins / (team_wins + opp_wins)

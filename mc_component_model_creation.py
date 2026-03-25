@@ -25,12 +25,12 @@ create_model_pieces_mode = False
 #=====================================================
 
 # Model Creation and Testing Globals
-set_model = 8
+# TEMP LOOPING OVER ALL MODELS set_model = 3
 
 # Model numbers for set_model:
 #   1: TARGET POSS - GBR - RMSE: 3.8489
-#   2: TARGET FGA - GBR - RMSE: 0.0625
-#   3: TARGET FG% - GBR - RMSE: 6.1895   **No longer in use**
+#   2: TARGET FGA - GBR - RMSE: 6.2497
+#   3: TARGET FG% - GBR - ** IGNORE **
 #   4: TARGET 3PTA - GBR - RMSE: 4.7104
 #   5: TARGET 3PT% - GBR - RMSE: 10.8288
 #   6: TARGET FTA - GBR - RMSE: 6.0396
@@ -113,12 +113,13 @@ def create_target_variable_in_df(combined, target_variable):
         combined['TARGET FGA'] = (
             (combined['PPG'] - combined['FTPG'] - 3 * combined['3PPG']) / 2.0
             + combined['3PPG']
-        ) / combined['FG%']
+        ) / (combined['FG%'] / 100)
 
     elif target_variable == 'TARGET 2PT%':
         combined['TARGET 2PT%'] = combined['2PT MADE'] / combined['2PT ATT']
 
     elif target_variable[7:] in combined.columns:
+        combined = combined.copy()
         combined[target_variable] = combined[target_variable[7:]]
 
     else:
@@ -793,101 +794,103 @@ if __name__ == '__main__':
     combined = add_opponent_seed(combined)
 
     if create_model_pieces_mode:
-        for mode in [False, True]:
-            run_feature_evaluation = mode
-            retrain_same_params = mode
+        # ONE TIME TEMPORARY LOOP
+        for set_model in [4, 5, 6, 7, 8]:
+            for mode in [False, True]:
+                run_feature_evaluation = mode
+                retrain_same_params = mode
 
-            if set_model == 1:
-                target_variable = 'TARGET POSS'
+                if set_model == 1:
+                    target_variable = 'TARGET POSS'
 
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    feature_list = get_model_feature_list(target_variable, combined)
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        feature_list = get_model_feature_list(target_variable, combined)
 
-                    model, rmse, combined, params, rmse_logit = create_train_gbr_model(combined, feature_list, target_variable)
-                    print(target_variable + ' MODEL')
-                    print_model_info(model, feature_list, rmse)
+                        model, rmse, combined, params, rmse_logit = create_train_gbr_model(combined, feature_list, target_variable)
+                        print(target_variable + ' MODEL')
+                        print_model_info(model, feature_list, rmse)
 
-                    dump({
-                        'model': model,
-                        'feature_list': feature_list,
-                        'cross_val_rmse': rmse,
-                        'cross_val_rmse_logit': rmse_logit if '%' in target_variable else None,
-                        'params': params
-                        }, 
-                        get_filename_for_target(target_variable))
+                        dump({
+                            'model': model,
+                            'feature_list': feature_list,
+                            'cross_val_rmse': rmse,
+                            'cross_val_rmse_logit': rmse_logit if '%' in target_variable else None,
+                            'params': params
+                            }, 
+                            get_filename_for_target(target_variable))
 
-            elif set_model == 2:
-                target_variable = 'TARGET FGA'
-                combined = create_target_variable_in_df(combined, target_variable)
+                elif set_model == 2:
+                    target_variable = 'TARGET FGA'
+                    combined = create_target_variable_in_df(combined, target_variable)
 
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
 
-            elif set_model == 3:
-                target_variable = 'TARGET FG%'
-                combined = create_target_variable_in_df(combined, target_variable)
+                elif set_model == 3:
+                    target_variable = 'TARGET FG%'
+                    combined = create_target_variable_in_df(combined, target_variable)
 
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
 
-            elif set_model == 4:
-                target_variable = 'TARGET 3PTA'
-                combined = create_target_variable_in_df(combined, target_variable)
-                
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
+                elif set_model == 4:
+                    target_variable = 'TARGET 3PTA'
+                    combined = create_target_variable_in_df(combined, target_variable)
+                    
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
 
-            elif set_model == 5:
-                target_variable = 'TARGET 3PT%'
-                combined = create_target_variable_in_df(combined, target_variable)
-                
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
+                elif set_model == 5:
+                    target_variable = 'TARGET 3PT%'
+                    combined = create_target_variable_in_df(combined, target_variable)
+                    
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
 
-            elif set_model == 6:
-                target_variable = 'TARGET FTA'
-                combined = create_target_variable_in_df(combined, target_variable)
+                elif set_model == 6:
+                    target_variable = 'TARGET FTA'
+                    combined = create_target_variable_in_df(combined, target_variable)
 
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
 
-            elif set_model == 7:
-                target_variable = 'TARGET FT%'
-                combined = create_target_variable_in_df(combined, target_variable)
-                
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
+                elif set_model == 7:
+                    target_variable = 'TARGET FT%'
+                    combined = create_target_variable_in_df(combined, target_variable)
+                    
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
 
-            elif set_model == 8:
-                target_variable = 'TARGET 2PT%'
-                combined = create_target_variable_in_df(combined, target_variable)
-                
-                if run_feature_evaluation:
-                    evaluate_features_to_add(combined, target_variable)
-                    evaluate_features_to_remove(combined, target_variable)
-                else:
-                    create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
+                elif set_model == 8:
+                    target_variable = 'TARGET 2PT%'
+                    combined = create_target_variable_in_df(combined, target_variable)
+                    
+                    if run_feature_evaluation:
+                        evaluate_features_to_add(combined, target_variable)
+                        evaluate_features_to_remove(combined, target_variable)
+                    else:
+                        create_and_dump_model_using_feature_list(combined, target_variable, 'GBR')
 
     else:
         model = overallModel(combined)
